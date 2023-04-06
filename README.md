@@ -9,16 +9,16 @@ npm run dev
 
 ## Página de adição de produtos
 
-/create
-/create/:id/success
-/create/:id/error
+/create  
+/create/:id/success  
+/create/:id/error  
 
 ## Página para exclusão de produtos
 
-/remove
-/remove/:id
-/remove/:id/success
-/remove/:id/error
+/remove  
+/remove/:id  
+/remove/:id/success  
+/remove/:id/error  
 
 ## API
 
