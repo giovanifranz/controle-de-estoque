@@ -36,7 +36,7 @@ export function FormAdd() {
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
-      quantity: 0,
+      quantity: 1,
     },
     resolver: zodResolver(inputSchema),
   })

@@ -16,8 +16,8 @@ const RemovePage: NextPage<Props> = ({ product }) => {
 
 export default RemovePage
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { id } = query || {}
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const { id } = params || {}
 
   if (typeof id === 'string' && id.trim().length > 0) {
     try {
