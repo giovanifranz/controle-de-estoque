@@ -22,7 +22,7 @@ import { trpc } from '@/utils/trpc'
 import { Product } from '@/utils/http'
 
 type Props = {
-  initialValues?: Omit<Product, 'id'>
+  initialValues?: Product
 }
 
 const inputSchema = z.object({
