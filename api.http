@@ -1,0 +1,10 @@
+GET http://localhost:3000/api/get-product/9dpigJk6YE7dL4E54u03
+
+###
+POST http://localhost:3000/api/create-product
+Content-Type: application/json
+
+{
+  "name": "xpto",
+  "amount": 1
+}
