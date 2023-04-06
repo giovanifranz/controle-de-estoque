@@ -52,8 +52,8 @@ export function FormRemove({ initialValues = defaultValues }: Props) {
   })
 
   const onSubmit = useCallback(
-    async (values: FormValues) => {
-      await deleteProduct({ id: values.id })
+    async ({ id }: FormValues) => {
+      await deleteProduct({ id })
       reset()
     },
     [deleteProduct, reset],
