@@ -19,12 +19,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { trpc } from '@/utils/trpc'
 
-import { Product } from '@/utils/http'
-
-type Props = {
-  initialValues?: Omit<Product, 'id'>
-}
-
 const inputSchema = z.object({
   name: z.string(),
   quantity: z.number(),
@@ -32,12 +26,7 @@ const inputSchema = z.object({
 
 type FormValues = z.infer<typeof inputSchema>
 
-const defaultValues = {
-  name: '',
-  quantity: 0,
-}
-
-export function FormAdd({ initialValues = defaultValues }: Props) {
+export function FormAdd() {
   const { mutateAsync: createProduct } = trpc.createProduct.useMutation()
   const {
     register,
@@ -45,7 +34,10 @@ export function FormAdd({ initialValues = defaultValues }: Props) {
     reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
-    defaultValues: initialValues,
+    defaultValues: {
+      name: '',
+      quantity: 0,
+    },
     resolver: zodResolver(inputSchema),
   })
 

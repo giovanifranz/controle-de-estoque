@@ -8,7 +8,7 @@ type Props = {
 
 const RemovePage: NextPage<Props> = ({ product }) => {
   if (product) {
-    return <FormRemove initialValues={{ ...product }} />
+    return <FormRemove initialValues={product} />
   }
 
   return <FormRemove />
@@ -21,11 +21,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   if (typeof id === 'string' && id.trim().length > 0) {
     try {
-      const response = await productResource.getProduct(id)
-
       return {
         props: {
-          product: { ...response },
+          product: await productResource.getProduct(id),
         },
       }
     } catch (error) {
