@@ -16,9 +16,9 @@ npm run dev
 ## Página para exclusão de produtos
 
 /remove
-/remove/:id
 /remove/:id/success
 /remove/:id/error
+/remove/?id=id
 
 ## API
 
