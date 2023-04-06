@@ -4,7 +4,7 @@ import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 
 type Product = {
   name: string
-  amount: number
+  quantity: number
 }
 
 export default async function handler(
@@ -13,10 +13,10 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { name, amount } = req.body as Product
+      const { name, quantity } = req.body as Product
       const productsRef = collection(db, 'products')
       const docRef = doc(productsRef)
-      await setDoc(docRef, { name, amount })
+      await setDoc(docRef, { name, quantity })
       const docSnap = await getDoc(docRef)
       const product = { id: docSnap.id, ...docSnap.data() }
       res.status(201).json(product)
