@@ -3,7 +3,6 @@ import axios, { AxiosInstance } from 'axios'
 export type Product = {
   id: string
   name: string
-  quantity: number
 }
 
 export class ProductResource {
@@ -20,10 +19,9 @@ export class ProductResource {
     await this.http.delete(`/delete-product/${id}`)
   }
 
-  async createProduct({ name, quantity }: Omit<Product, 'id'>) {
+  async createProduct({ name }: Omit<Product, 'id'>) {
     const { data } = await this.http.post<Product>(`/create-product`, {
       name,
-      quantity,
     })
     return data
   }

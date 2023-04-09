@@ -4,14 +4,11 @@ import {
   Button,
   Container,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
 } from '@chakra-ui/react'
 import { useCallback } from 'react'
 import { z } from 'zod'
@@ -20,11 +17,10 @@ import { useForm } from 'react-hook-form'
 import { trpc } from '@/utils/trpc'
 
 const inputSchema = z.object({
-  name: z.string(),
-  quantity: z.number(),
+  name: z.string().nonempty('Nome é obrigatório'),
 })
 
-type FormValues = z.infer<typeof inputSchema>
+type FormValues = z.input<typeof inputSchema>
 
 export function FormAdd() {
   const { mutateAsync: createProduct } = trpc.createProduct.useMutation()
@@ -32,19 +28,23 @@ export function FormAdd() {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
+    mode: 'all',
     defaultValues: {
       name: '',
-      quantity: 1,
     },
     resolver: zodResolver(inputSchema),
   })
 
   const onSubmit = useCallback(
     async (values: FormValues) => {
-      await createProduct(values)
-      reset()
+      try {
+        await createProduct(values)
+        reset()
+      } catch (error) {
+        console.error(error)
+      }
     },
     [createProduct, reset],
   )
@@ -56,28 +56,30 @@ export function FormAdd() {
           Adicionar Produto
         </Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl color="white" display="flex" flexDir="column" gap={4}>
+          <FormControl
+            isInvalid={Boolean(errors.name)}
+            color="white"
+            display="flex"
+            flexDir="column"
+            gap={4}
+          >
             <Box>
               <FormLabel>Nome:</FormLabel>
               <Input
                 color="black"
                 bg="white"
                 type="text"
-                id="name"
                 {...register('name')}
               />
+              {errors.name ? (
+                <FormErrorMessage>{errors.name.message}</FormErrorMessage>
+              ) : (
+                <FormHelperText color="white">
+                  Nome é obrigatório
+                </FormHelperText>
+              )}
             </Box>
-            <Box>
-              <FormLabel>Quantidade: </FormLabel>
-              <NumberInput id="quantity" color="black" bg="white">
-                <NumberInputField {...register('quantity', { min: 1 })} />
-                <NumberInputStepper>
-                  <NumberIncrementStepper bg="gray.100" />
-                  <NumberDecrementStepper bg="gray.100" />
-                </NumberInputStepper>
-              </NumberInput>
-            </Box>
-            <Button type="submit" bg="green.300" disabled={isSubmitting}>
+            <Button type="submit" bg="green.300" isLoading={isSubmitting}>
               Adicionar
             </Button>
           </FormControl>

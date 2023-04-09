@@ -7,13 +7,11 @@ export const productsRouter = router({
     .input(
       z.object({
         name: z.string(),
-        quantity: z.number(),
       }),
     )
     .mutation(({ input, ctx }) =>
       ctx.productResource.createProduct({
         name: input.name,
-        quantity: input.quantity,
       }),
     ),
 
@@ -31,5 +29,5 @@ export const productsRouter = router({
         id: z.string(),
       }),
     )
-    .query(({ input, ctx }) => ctx.productResource.getProduct(input.id)),
+    .mutation(({ input, ctx }) => ctx.productResource.getProduct(input.id)),
 })

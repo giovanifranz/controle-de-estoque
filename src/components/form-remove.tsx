@@ -4,16 +4,13 @@ import {
   Button,
   Container,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
 } from '@chakra-ui/react'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -26,39 +23,67 @@ type Props = {
 }
 
 const inputSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  quantity: z.number(),
+  id: z
+    .string()
+    .length(20, 'ID do produto tem que ter exatamente 20 caracteres'),
+  name: z.string().nonempty('Nome é obrigatório'),
 })
 
 type FormValues = z.infer<typeof inputSchema>
 
-const defaultValues = {
-  id: '',
-  name: '',
-  quantity: 0,
-}
-
-export function FormRemove({ initialValues = defaultValues }: Props) {
+export function FormRemove({
+  initialValues = {
+    id: '',
+    name: '',
+  },
+}: Props) {
+  const { mutateAsync: getProduct } = trpc.getProduct.useMutation()
   const { mutateAsync: deleteProduct } = trpc.deleteProduct.useMutation()
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    watch,
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
+    mode: 'all',
     defaultValues: initialValues,
     resolver: zodResolver(inputSchema),
   })
 
+  const { id: productId } = watch()
+
+  const handleProduct = useCallback(
+    async (id: string) => {
+      try {
+        const product = await getProduct({ id })
+        reset(product)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [getProduct, reset],
+  )
+
+  useEffect(() => {
+    if (productId.length === 20) {
+      handleProduct(productId)
+    }
+  }, [handleProduct, productId])
+
   const onSubmit = useCallback(
     async ({ id }: FormValues) => {
-      await deleteProduct({ id })
-      reset()
+      try {
+        await deleteProduct({ id })
+        reset()
+      } catch (error) {
+        console.error(error)
+      }
     },
     [deleteProduct, reset],
   )
 
+  console.log(isSubmitting)
   return (
     <Container as="main" position="relative" maxW="container.lg" h="100vh">
       <AbsoluteCenter>
@@ -66,37 +91,36 @@ export function FormRemove({ initialValues = defaultValues }: Props) {
           Remover Produto
         </Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl color="white" display="flex" flexDir="column" gap={4}>
+          <FormControl
+            isInvalid={Boolean(errors.name) || Boolean(errors.id)}
+            color="white"
+            display="flex"
+            flexDir="column"
+            gap={4}
+          >
             <Box>
               <FormLabel>ID do Produto:</FormLabel>
-              <Input
-                color="black"
-                bg="white"
-                type="text"
-                id="id"
-                {...register('id')}
-              />
+              <Input color="black" bg="white" type="text" {...register('id')} />
+              {errors.id ? (
+                <FormErrorMessage>{errors.id.message}</FormErrorMessage>
+              ) : (
+                <FormHelperText color="white">
+                  ID do produto tem que ter exatamente 20 caracteres
+                </FormHelperText>
+              )}
             </Box>
             <Box>
               <FormLabel>Nome:</FormLabel>
-              <Input
-                color="black"
-                bg="white"
-                type="text"
-                {...register('name')}
-              />
+              <Input color="black" bg="white" {...register('name')} disabled />
+              {errors.name ? (
+                <FormErrorMessage>{errors.name.message}</FormErrorMessage>
+              ) : (
+                <FormHelperText color="white">
+                  Nome é obrigatório
+                </FormHelperText>
+              )}
             </Box>
-            <Box>
-              <FormLabel>Quantidade: </FormLabel>
-              <NumberInput color="black" bg="white">
-                <NumberInputField {...register('quantity', { min: 1 })} />
-                <NumberInputStepper>
-                  <NumberIncrementStepper bg="gray.100" />
-                  <NumberDecrementStepper bg="gray.100" />
-                </NumberInputStepper>
-              </NumberInput>
-            </Box>
-            <Button type="submit" bg="red.300" disabled={isSubmitting}>
+            <Button type="submit" bg="red.300" isLoading={isSubmitting}>
               Remover
             </Button>
           </FormControl>
