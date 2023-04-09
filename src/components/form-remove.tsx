@@ -66,10 +66,10 @@ export function FormRemove({ initialValues = defaultValues }: Props) {
   )
 
   useEffect(() => {
-    if (productId.length === 20) {
+    if (productId !== initialValues.id && productId.length === 20) {
       handleProduct(productId)
     }
-  }, [handleProduct, productId])
+  }, [handleProduct, initialValues.id, productId])
 
   const onSubmit = useCallback(
     async ({ id }: FormValues) => {
