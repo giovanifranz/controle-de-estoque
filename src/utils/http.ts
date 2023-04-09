@@ -7,7 +7,11 @@ export type Product = {
 
 export class ProductResource {
   private http: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: `${
+      process.env.ENV_TYPE === 'development'
+        ? 'http://localhost:3000'
+        : `https://${process.env.VERCEL_URL}`
+    } + /api`,
   })
 
   async getProduct(id: string) {
