@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
+import { getBaseUrl } from './getBaseUrl'
 
 export type Product = {
   id: string
@@ -7,11 +8,7 @@ export type Product = {
 
 export class ProductResource {
   private http: AxiosInstance = axios.create({
-    baseURL: `${
-      process.env.ENV_TYPE === 'development'
-        ? 'http://localhost:3000'
-        : `https://${process.env.VERCEL_URL}`
-    } + /api`,
+    baseURL: `${getBaseUrl()}/api`,
   })
 
   async getProduct(id: string) {
