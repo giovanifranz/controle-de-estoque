@@ -22,6 +22,10 @@ const inputSchema = z.object({
 
 type FormValues = z.input<typeof inputSchema>
 
+const defaultValues = {
+  name: '',
+}
+
 export function FormAdd() {
   const { mutateAsync: createProduct } = trpc.createProduct.useMutation()
   const {
@@ -31,9 +35,7 @@ export function FormAdd() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     mode: 'all',
-    defaultValues: {
-      name: '',
-    },
+    defaultValues,
     resolver: zodResolver(inputSchema),
   })
 
@@ -41,7 +43,7 @@ export function FormAdd() {
     async (values: FormValues) => {
       try {
         await createProduct(values)
-        reset({ name: '' })
+        reset(defaultValues)
       } catch (error) {
         console.error(error)
       }

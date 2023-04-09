@@ -31,12 +31,12 @@ const inputSchema = z.object({
 
 type FormValues = z.infer<typeof inputSchema>
 
-export function FormRemove({
-  initialValues = {
-    id: '',
-    name: '',
-  },
-}: Props) {
+const defaultValues = {
+  id: '',
+  name: '',
+}
+
+export function FormRemove({ initialValues = defaultValues }: Props) {
   const { mutateAsync: getProduct } = trpc.getProduct.useMutation()
   const { mutateAsync: deleteProduct } = trpc.deleteProduct.useMutation()
   const {
@@ -75,7 +75,7 @@ export function FormRemove({
     async ({ id }: FormValues) => {
       try {
         await deleteProduct({ id })
-        reset({ id: '', name: '' })
+        reset(defaultValues)
       } catch (error) {
         console.error(error)
       }
