@@ -75,7 +75,7 @@ export function FormRemove({
     async ({ id }: FormValues) => {
       try {
         await deleteProduct({ id })
-        reset()
+        reset({ id: '', name: '' })
       } catch (error) {
         console.error(error)
       }
@@ -83,7 +83,6 @@ export function FormRemove({
     [deleteProduct, reset],
   )
 
-  console.log(isSubmitting)
   return (
     <Container as="main" position="relative" maxW="container.lg" h="100vh">
       <AbsoluteCenter>

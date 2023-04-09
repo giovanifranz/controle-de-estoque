@@ -41,7 +41,7 @@ export function FormAdd() {
     async (values: FormValues) => {
       try {
         await createProduct(values)
-        reset()
+        reset({ name: '' })
       } catch (error) {
         console.error(error)
       }
