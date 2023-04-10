@@ -98,7 +98,7 @@ export function FormRemove({ initialValues = defaultValues }: Props) {
             gap={4}
           >
             <Box>
-              <FormLabel>ID do Produto:</FormLabel>
+              <FormLabel htmlFor="id">ID do Produto:</FormLabel>
               <Input color="black" bg="white" type="text" {...register('id')} />
               {errors.id ? (
                 <FormErrorMessage>{errors.id.message}</FormErrorMessage>
@@ -109,7 +109,7 @@ export function FormRemove({ initialValues = defaultValues }: Props) {
               )}
             </Box>
             <Box>
-              <FormLabel>Nome:</FormLabel>
+              <FormLabel htmlFor="name">Nome:</FormLabel>
               <Input color="black" bg="white" {...register('name')} disabled />
               {errors.name ? (
                 <FormErrorMessage>{errors.name.message}</FormErrorMessage>

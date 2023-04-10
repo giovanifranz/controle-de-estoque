@@ -66,7 +66,7 @@ export function FormAdd() {
             gap={4}
           >
             <Box>
-              <FormLabel>Nome:</FormLabel>
+              <FormLabel htmlFor="name">Nome:</FormLabel>
               <Input
                 color="black"
                 bg="white"
